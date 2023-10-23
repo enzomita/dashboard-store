@@ -4,7 +4,7 @@
   "author": "Enzo Masciulli <enzomasciulli@gmail.com>",
   "version": "1.0.0",
   "type": "module",
-  "homepage": "http://enzomita.github.io/dashboard",
+  "homepage": "http://enzomita.github.io/dashboard-store",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
