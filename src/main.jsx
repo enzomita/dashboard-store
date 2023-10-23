@@ -17,7 +17,7 @@ const theme = createTheme({
 });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter basename="/dashboard">
+  <BrowserRouter basename="/dashboard-store">
     <CssBaseline />
     <ThemeProvider theme={theme}>
       <App />
