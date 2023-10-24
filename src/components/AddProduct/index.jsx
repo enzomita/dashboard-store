@@ -1,8 +1,9 @@
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormHelperText, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useAxios } from "../../hooks/useAxios";
 import { apiConfig } from "../../api/apiConfig";
 import Loader from "../Loader";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 const AddProduct = ({ open, onClose, onCloseAfterApi }) => {
 
@@ -51,6 +52,7 @@ const AddProduct = ({ open, onClose, onCloseAfterApi }) => {
   }
 
   const [formData, setFormData] = useState(formDataDefault);
+  const [debugReviews, setDebugReviews] = useState("");
 
   const { res, err, loading, triggerFetch, reInitState } = useAxios({}, false);
 
@@ -59,6 +61,18 @@ const AddProduct = ({ open, onClose, onCloseAfterApi }) => {
     Object.keys(formData).forEach(key => {
       body[key] = formData[key].value;
     })
+
+    // Add reviews debug
+
+    if (debugReviews) {
+      const reviewsArray = debugReviews.split("|");
+      body.reviews = reviewsArray;
+    } else {
+      body.reviews = [];
+    }
+
+    body.employee = localStorage.getItem("login-user") || sessionStorage.getItem("login-user") || "";
+
     return body;
   }
 
@@ -141,7 +155,7 @@ const AddProduct = ({ open, onClose, onCloseAfterApi }) => {
                       />
                     ) : (
                       <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
-                        <InputLabel htmlFor="outlined-adornment-amount">Prezzo</InputLabel>
+                        <InputLabel htmlFor={formData[key].id}>Prezzo</InputLabel>
                         <OutlinedInput
                           disabled={!!loading}
                           id={formData[key].id}
@@ -155,10 +169,38 @@ const AddProduct = ({ open, onClose, onCloseAfterApi }) => {
                             ...formData, [key]: { ...formData[key], value: e.target.value }
                           })}
                         />
+                        {formData[key].error.show && (
+                          <FormHelperText error>
+                            {formData[key].error.show ? formData[key].error.label : ''}
+                          </FormHelperText>
+                        )}
                       </FormControl>
                     )}
                   </React.Fragment>
                 ))}
+
+                <Accordion sx={{ mt: 3 }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      Debug fields
+                    </Typography>
+                    <TextField
+                      disabled={!!loading}
+                      margin="dense"
+                      id="debug-review"
+                      label="Recensioni"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                      helperText={"Per inserire multiple recensioni separarle con la pipe | -> esempio di 3 recensioni: Bello|Molto Buono|Una fantastica sorpresa"}
+                      sx={{ mt: 2, mb: 2 }}
+                      onChange={(e) => setDebugReviews(e.target.value) }
+                    />
+                  </AccordionDetails>
+                </Accordion>
+
               </DialogContent>
               <DialogActions>
                 <Button onClick={() => onClose()} disabled={!!loading}>Annulla</Button>
