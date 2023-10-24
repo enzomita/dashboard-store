@@ -2,7 +2,7 @@
   "name": "dashboard",
   "private": true,
   "author": "Enzo Masciulli <enzomasciulli@gmail.com>",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "homepage": "http://enzomita.github.io/dashboard-store",
   "scripts": {
