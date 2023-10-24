@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography, useMediaQuery } from "@mui/material";
 import { apiConfig } from "../api/apiConfig";
 import { useAxios } from "../hooks/useAxios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import Loader from "../components/Loader";
 import GridViewIcon from '@mui/icons-material/GridView';
@@ -19,7 +19,7 @@ const Home = () => {
   const [addProductOpen, setAddProductOpen] = useState(false);
   const [productToBeDeleted, setProductToBeDeleted] = useState(null);
 
-  const { data: products = [], loading, refreshCall } = useAxios({
+  const { data: products = [], err: errorGetProducts, loading, refreshCall } = useAxios({
     url: apiConfig.getProducts,
     method: 'get',
   });
@@ -39,6 +39,13 @@ const Home = () => {
       method: 'delete',
     })
   }
+
+  useEffect(() => {
+    if (responseDelete) {
+      refreshCall();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [responseDelete])
 
   return (
     <>
@@ -78,6 +85,14 @@ const Home = () => {
 
       {loading && (
         <Loader></Loader>
+      )}
+      {errorGetProducts && (
+        <Box sx={{ margin: "0 auto", maxWidth: isUpDesktop ? "60%" : "100%" }}>
+          <Alert severity="error">
+            Si è verificato un errore durante il caricamento dei prodotti. Si prega di riprovare più tardi.<br/>
+            {errorGetProducts.message}
+          </Alert>
+        </Box>
       )}
 
       {products && (
