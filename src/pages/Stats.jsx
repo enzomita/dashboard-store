@@ -10,9 +10,10 @@ import { apiConfig } from '../api/apiConfig';
 import { useAxios } from '../hooks/useAxios';
 import Loader from '../components/Loader';
 import { useMemo } from 'react';
+import { Alert, Box } from '@mui/material';
 
 const Stats = () => {
-  const { data: categories = [], loading } = useAxios({
+  const { data: categories = [], err: categoriesGetError, loading } = useAxios({
     url: apiConfig.getStatsCategory,
     method: 'get',
   });
@@ -58,6 +59,14 @@ const Stats = () => {
     <>
       {loading && (
         <Loader></Loader>
+      )}
+      {categoriesGetError && (
+        <Box sx={{ margin: "0 auto" }}>
+          <Alert severity="error">
+            Si è verificato un errore durante il caricamento delle categorie. Si prega di riprovare più tardi<br/>
+            {categoriesGetError.message}
+          </Alert>
+        </Box>
       )}
       {categories.length > 0 && (
         <div style={{ width: "100%", height: "calc(100vh - 220px)"}}>
